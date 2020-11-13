@@ -1,0 +1,32 @@
+version: "3"
+services:
+  writer:
+    build:
+      context: .
+      dockerfile: Dockerfile.yaml
+      args:
+        REQUIREMENTS: requirements.txt
+    container_name: writer
+    volumes:
+      - vol_data:/data/ctm
+    depends_on:
+      - "reader"
+    command: ["/wait-for-process.sh", "/data/ctm/lock_file.txt", "src/etl/load_data.py"]
+    environment:
+      env: devel
+  reader:
+    build:
+      context: .
+      dockerfile: Dockerfile.yaml
+      args:
+        REQUIREMENTS: requirements_old.txt
+    container_name: reader
+    volumes:
+      - vol_data:/data/ctm
+    command: src/etl/data_loaders/retrieve_data.py
+    environment:
+      env: devel
+
+volumes:
+  vol_data:
+    external: true

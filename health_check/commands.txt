@@ -1,0 +1,7 @@
+# First create a volume by passing
+docker volume create greencharge_data
+# After volume exists let's run the process
+docker-compose -f docker-compose.yml up --build
+
+# In order to run this process every day, let's add the command in a crontab file by using this format
+0 1 * * * /usr/local/bin/docker-compose -f PATH-TO/docker-compose.yml up --build
